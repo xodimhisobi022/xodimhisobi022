@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xodimlar Jarimasi Hisoboti</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: white;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      margin: 20px 0;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h1>Xodimlar Jarimasi Hisoboti</h1>
+  
+  <table id="penaltyTable">
+    <thead>
+      <tr>
+        <th>Xodim Ismi va Familiyasi</th>
+        <th>Umumiy Jarima Summasi</th>
+        <th>Oy va Yil</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Bu yerda AppSheet ma'lumotlari asosida qatorlar avtomatik to'ldiriladi -->
+    </tbody>
+  </table>
+
+  <button onclick="exportToExcel()">Excel formatida yuklash</button>
+
+  <script>
+    // URL parametrlarini olish
+    const urlParams = new URLSearchParams(window.location.search);
+    const xodimIsmi = urlParams.get('Xodim_Ismi');
+    const penalty = urlParams.get('penalty');
+    const month = urlParams.get('month');
+
+    // Jadvalga ma'lumotlarni qo'shish
+    const table = document.querySelector("#penaltyTable tbody");
+    const newRow = table.insertRow();
+    newRow.innerHTML = `
+      <td>${decodeURIComponent(xodimIsmi)}</td>
+      <td>${decodeURIComponent(penalty)}</td>
+      <td>${decodeURIComponent(month)}</td>
+    `;
+
+    // Excel yuklash funksiyasi
+    function exportToExcel() {
+      var wb = XLSX.utils.table_to_book(document.querySelector("table"), { sheet: "Xodimlar Jarimalari" });
+      var wbout = XLSX.write(wb, { bookType: "xlsx", bookSST: true, type: "array" });
+      
+      var blob = new Blob([wbout], { type: "application/octet-stream" });
+      var link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "Xodimlar_Jarimalari_Hisoboti.xlsx";
+      link.click();
+    }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+</body>
+</html>
